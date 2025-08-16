@@ -1,0 +1,20 @@
+Metric,Value
+Average Message Frequency (seconds),9.03
+Average Message Frequency Players (seconds),19.93
+Average Message Frequency Bot (seconds),19.53
+Average Message Length (characters),20.26
+Average Message Length Players (characters),16.23
+Average Message Length Bot (characters),29.83
+Average Game Duration (seconds),107.11
+Game Count,72
+
+
+Accusation Pattern,Percentage
+No accusations,0.0
+One player accused bot,5.6
+One player accused human,0.0
+Both players accused bot,66.7
+"One accused bot, one human",20.8
+Both accused each other,6.9
+
+
