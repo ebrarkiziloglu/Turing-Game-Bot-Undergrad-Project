@@ -1,0 +1,56 @@
+Day 1 Accusations
+Round,No accusations,One player accused bot,One player accused human,Both players accused bot,"One accused bot, one human",Both accused each other
+1,0,2,0,0,0,1
+2,0,0,1,2,0,0
+3,0,0,0,1,2,0
+4,0,1,0,2,0,0
+5,0,0,0,0,0,0
+6,0,0,0,0,0,0
+7,0,1,0,1,0,1
+8,0,0,0,3,0,0
+9,0,0,0,3,0,0
+10,0,0,0,2,1,0
+
+
+Day 2 Accusations
+Round,No accusations,One player accused bot,One player accused human,Both players accused bot,"One accused bot, one human",Both accused each other
+1,0,1,0,1,1,0
+2,0,0,0,0,0,0
+3,0,1,0,1,1,0
+4,0,0,0,2,1,0
+5,0,0,0,0,0,0
+6,0,0,0,2,1,0
+7,0,0,0,3,0,0
+8,0,0,0,2,1,0
+9,0,0,0,1,0,0
+10,0,0,0,0,0,0
+
+
+Day 3 Accusations
+Round,No accusations,One player accused bot,One player accused human,Both players accused bot,"One accused bot, one human",Both accused each other
+1,0,0,0,3,0,0
+2,0,0,0,1,2,0
+3,0,0,0,3,0,0
+4,0,0,0,2,1,0
+5,0,0,0,2,1,0
+6,0,0,0,3,0,0
+7,0,0,0,2,1,0
+8,0,1,0,2,0,0
+9,0,0,0,1,0,0
+10,0,0,0,2,1,0
+
+
+Day 4 Accusations
+Round,No accusations,One player accused bot,One player accused human,Both players accused bot,"One accused bot, one human",Both accused each other
+1,0,1,2,0,0,0
+2,0,0,0,1,2,0
+3,0,0,0,2,0,1
+4,0,0,0,0,1,2
+5,0,0,0,0,0,0
+6,0,0,0,2,0,1
+7,0,0,0,1,2,0
+8,0,0,0,1,0,0
+9,0,0,0,0,0,0
+10,0,0,0,2,1,0
+
+

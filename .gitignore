@@ -6,4 +6,4 @@ __pycache__/
 
 workshop/workshop slides.pdf
 
-.db
+src/data_analysis/turing.db
