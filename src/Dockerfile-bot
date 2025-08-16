@@ -1,0 +1,30 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /usr/src/app/bot && chmod -R 777 /usr/src/app/bot
+RUN mkdir -p /usr/src/app/bot/logs && chmod -R 777 /usr/src/app/bot/logs
+
+COPY turing_game_bot /usr/src/app/turing_game_bot
+COPY turing_chat_server /usr/src/app/turing_chat_server
+COPY requirements.txt /usr/src/app/.
+COPY ./groq_api_keys.txt /usr/src/app/groq_api_keys.txt
+COPY ./openai_api_keys.txt /usr/src/app/openai_api_keys.txt
+COPY turing_game_bot/logs /usr/src/app/bot/logs
+
+# Set PYTHONPATH to include the app root
+ENV PYTHONPATH=/usr/src/app
+
+# COPY . .
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the bot's Flask app port
+EXPOSE 8005
+
+# Start the bot
+# CMD ["python3", "bot.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8005", "turing_chat_server.bot:app"]

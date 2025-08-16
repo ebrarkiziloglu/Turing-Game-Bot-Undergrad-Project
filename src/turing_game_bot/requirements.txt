@@ -1,0 +1,7 @@
+turing-bot-client
+python-dotenv
+openai
+websockets
+llama-cpp-python -C cmake.args="-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_APPLE_SILICON_PROCESSOR=arm64 -DGGML_METAL=on"
+huggingface-hub
+ollama

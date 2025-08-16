@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Chat Room</title>
+    <style>
+
+      body {
+          font-family: "Arial", sans-serif;
+          background-color: #1b1b2f;
+          color: #ffffff;
+          margin: 0;
+          padding: 0;
+          height: 100vh;
+          overflow: hidden; /* Prevent body scrolling */
+          /* flex-direction: column; */
+          display: flex;
+      }
+
+      #chat-container {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          background-color: #1e0649;
+          border-radius: 12px;
+          margin: 20px;
+          padding: 10px;
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+          max-height: calc(100vh - 40px); /* Account for margins */
+      }
+
+      #message-box {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: #c0b7cf;
+        border: 2px solid #8049e0;
+        border-radius: 8px;
+        min-height: 0; /* Important for flex child scrolling */
+        margin-bottom: 10px; 
+      }
+
+      .message {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+      }
+
+      .message span {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      #input-container {
+        padding: 20px;
+        display: flex;
+        background-color: #1e0649;
+        border-radius: 8px;
+      }
+
+      #input-container input {
+        flex: 1;
+        padding: 12px 15px;
+        font-size: 1.1rem;
+        border: 2px solid #8049e0;
+        border-radius: 8px;
+        background-color: #c0b7cf;
+        color: #ffffff;
+        outline: none;
+      }
+
+      #input-container button {
+        padding: 12px 25px;
+        background-color: #6c63ff;
+        border: none;
+        border-radius: 8px;
+        margin-left: 10px;
+        color: white;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #input-container button {
+        background-color: #8049e0;
+      }
+
+      #input-container button:hover {
+        background-color: #a270f7;
+      }
+
+      #player-info {
+        padding: 15px;
+        background-color: #1e0649;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      #player-info div {
+        font-size: 1.2rem;
+        color: #f5f5f5;
+      }
+
+      .center-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 40px;
+      }
+
+      .game-id-container {
+        display: flex;
+        align-items: center;
+      }
+
+      #timer {
+        font-size: 1.2rem;
+        color: #ff4d4d;
+        text-align: center;
+        flex: 1;
+      }
+
+      #help-button {
+        background-color: #1e0649;
+        color: white;
+        border: 2px solid #8049e0;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+      }
+
+      #help-button:hover {
+        background-color: #8049e0;
+      }
+
+      #accusation-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #1e0649;
+        border-top: 2px solid #6c63ff;
+        margin-top: 10px;
+        color: #ffffff;
+      }
+      #accusation-container label {
+        margin-right: 10px;
+      }
+      #accusation-container button {
+        background-color: #c02727;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        padding: 8px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      #accusation-container button:hover {
+        background-color: #ff4d4d;
+      }
+      #accusePlayer1Label,
+      #accusePlayer2Label {
+        display: none;
+      }
+
+      #help-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: #1e0649;
+        padding: 45px;
+        border-radius: 12px;
+        border: 2px solid #c0b7cf;
+        max-width: 800px;
+        width: 90%;
+        color: white;
+        position: relative;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+      }
+
+      .modal-content h1 {
+        margin-top: 0;
+        color: #b08ded;
+        font-size: 1.9rem;
+        margin-bottom: 15px;
+      }
+
+      .modal-content h2 {
+        margin-top: 0;
+        color: #ba9fe9;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+
+      .modal-content p {
+        margin-bottom: 20px;
+        line-height: 1.8;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 8px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .close-button:hover {
+        color: #a270f7;
+      }
+
+      #results-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-button {
+        background-color: #b08ded;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-top: 20px;
+      }
+
+      .modal-button:hover {
+        background-color: #9370db;
+      }
+
+      .result-item {
+        margin: 10px 0;
+        padding: 15px;
+        background-color: rgba(179, 171, 193, 0.1);
+        border-radius: 8px;
+      }
+
+      .result-item p {
+        font-size: 1.2rem; 
+        margin: 15px 0;   
+        line-height: 1.6;
+      }
+
+      .scores {
+          margin-top: 20px;
+          padding: 15px;
+          background-color: rgba(128, 73, 224, 0.1);
+          border-radius: 8px;
+      }
+
+      .scores ul {
+          list-style: none;
+          padding: 0;
+          margin: 10px 0;
+      }
+
+      .scores li {
+          margin: 8px 0;
+          font-size: 1.1rem;
+      }
+
+      .accusations {
+          margin: 15px 0;
+          padding: 10px;
+          border-left: 3px solid #8049e0;
+      }
+
+      .reason {
+          margin-top: 20px;
+          padding: 10px;
+          background-color: rgba(255, 77, 77, 0.1);
+          border-radius: 8px;
+          color: #ff4d4d;
+      }
+
+      .control-button {
+          background-color: #1e0649;
+          color: white;
+          border: 2px solid #1e0649;
+          border-radius: 8px;
+          padding: 8px 16px;
+          cursor: pointer;
+          font-size: 1rem;
+          transition: background-color 0.3s ease;
+      }
+
+      .control-button:hover {
+          background-color: #8049e0;
+      }
+
+      #leave-button {
+          background-color: #b32d2f;
+          border-color: #b32d2f;
+      }
+
+      #leave-button:hover {
+          background-color: #ff4d4d;
+      }
+
+      #report-button {
+          background-color: #ca8000;
+          border-color: #ca8000;
+      }
+
+      #report-button:hover {
+          background-color: #ffa500;
+      }
+
+      #accuse-button {
+        background-color: #b32d2f;
+      }
+
+      #accuse-button:hover {
+        background-color: #ff4d4d;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="chat-container">
+
+      <div id="player-info">
+        <div id="player-name">Player</div>
+        <button id="leave-button" class="control-button">Leave Game</button>
+        
+        <div class="center-container">
+          <div id="timer">Time Remaining: 05:00</div>
+          <button id="help-button" title="Game Instructions">?</button>
+        </div>
+        <button id="report-button" class="control-button">Report Inappropriate</button>
+
+        <div class="game-id-container">
+          <div id="game-id">Game ID: Loading...</div>
+        </div>
+      </div>
+      <div id="message-box"></div>
+      <div id="input-container">
+        <input
+          type="text"
+          id="message-input"
+          placeholder="enter your message..."
+        />
+        <button id="send-button">Send</button>
+      </div>
+
+      <!-- Accusation Switches Container -->
+      <div id="accusation-container">
+        <label id="accusePlayer1Label">
+          <input type="radio" name="accuse" id="accusePlayer1" />Accuse
+        </label>
+        <label id="accusePlayer2Label">
+          <input type="radio" name="accuse" id="accusePlayer2" />Accuse
+        </label>
+        <button id="accuse-button" class="control-button">Accuse</button>
+      </div>
+    </div>
+
+    <div id="help-modal">
+      <div class="modal-content">
+        <button class="close-button">&times;</button>
+        <h1>Welcome to the Turing Game! 👻</h1>
+        <p>In this game, there are <b>three players:</b> <br /></p>
+        <ul>
+          <li>2 real people</li>
+          <br />
+          <li>1 bot</li>
+        </ul>
+        <p>
+          Your task is simple yet challenging: figure out
+          <b>which player is the bot</b>! 🕵️‍♀️
+        </p>
+        <h2>How it works:</h2>
+        <p>
+          Each player gets a random color to keep things anonymous. <br>
+          You’ll have <b>5 minutes</b> to chat with the others and see who’s acting a
+          little… robotic. 🤖 <br />
+          Ask questions, look for weird answers, and trust your instinct!
+        </p>
+        <p>
+          When you think you’ve got it, hit the "Accuse" button at the bottom of
+          the chat. <br />
+          But here’s the catch:
+        </p>
+        <p>
+          <b>Once you accuse someone, you can’t change your mind!</b>
+          So don’t rush it—make sure you’re confident before calling someone
+          out.
+        </p>
+        <p>The game wraps up when:</p>
+        <ul>
+          <li>The timer hits zero, ⏳ or</li>
+          <li>Both real players make their accusations. 🎯</li>
+        </ul>
+        <p>
+          When the game ends, the bot’s identity will be revealed. Did you crack
+          the case? Or did the bot outsmart you? 👀
+        </p>
+      </div>
+    </div>
+
+    <div id="results-modal" style="display: none;">
+      <div class="modal-content">
+        <h1>Game Result: 🎮</h1>
+        <div id="game-results-content">
+        </div>
+        <button id="close-results" class="modal-button">Return to Home</button>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Get game ID from URL
+      const gameId = window.location.pathname.split("/").pop();
+
+      // Initialize variables
+      let socket;
+      let playerColor = "";
+
+      // Define the color codes for each player color
+      const COLOR_CODES = {
+        Orange: "#b27205",
+        Purple: "#350d86",
+        Blue: "#02029d",
+        Red: "#a31f21",
+        Green: "#016801",
+        Black: "#000000",
+        Warning: "#c40c0f",
+        Start: "#c40c0f",
+      };
+      const messageBox = document.getElementById("message-box");
+      const messageInput = document.getElementById("message-input");
+      const sendButton = document.getElementById("send-button");
+      messageInput.disabled = true;
+      messageInput.placeholder = "Waiting for the game to start...";
+      sendButton.disabled = true;
+      const timerDisplay = document.getElementById("timer");
+      const accuseButton = document.getElementById("accuse-button");
+      const accusePlayer1 = document.getElementById("accusePlayer1");
+      const accusePlayer2 = document.getElementById("accusePlayer2");
+      const playerNameDisplay = document.getElementById("player-name");
+      const gameIdDisplay = document.getElementById("game-id");
+      const resultsModal = document.getElementById('results-modal');
+      const resultsContent = document.getElementById('game-results-content');
+
+      const pathParts = window.location.pathname.split("/");
+
+      function cleanupGameState() {
+          messageInput.disabled = true;
+          sendButton.disabled = true;
+          accuseButton.disabled = true;
+          accusePlayer1.disabled = true;
+          accusePlayer2.disabled = true;
+          playerColor = "";  // Clear player color
+      }
+      
+      // First check authentication and get user data
+      fetch('/api/current-user', {
+          credentials: 'same-origin',
+          headers: {
+              'Accept': 'application/json'
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.error) {
+              console.log('Authentication failed:', data.error);
+              window.location.href = '/';
+              // window.location.href = '/game-entry';
+              return;
+          }
+
+          // Only initialize socket and join game after confirming authentication
+          socket = io({
+              auth: {
+                  sessionId: document.cookie
+                      .split('; ')
+                      .find(row => row.startsWith('sessionId='))
+                      ?.split('=')[1]
+              }
+          });
+
+          // Set up socket event handlers
+          setupSocketHandlers(socket, data.username);
+
+          // Join game with username from session
+          socket.emit("joinGame", { 
+              username: data.username, 
+              game_id: gameId 
+          });
+      })
+      .catch(error => {
+          console.error('Error fetching user data:', error);
+          window.location.href = '/';
+      });
+
+      // Separate function to set up all socket event handlers
+      function setupSocketHandlers(socket, username) {
+
+        // Listen for other players' colors to set up accusation options
+        socket.on("colorAssigned", ({ color, username: assignedUsername, game_id }) => {
+            playerColor = color;
+            playerNameDisplay.innerText = `Player: ${assignedUsername} (${color})`;
+            gameIdDisplay.innerText = `Game ID: ${game_id}`;
+        });
+
+        socket.on("otherPlayers", ({ otherPlayers }) => {
+
+          if (otherPlayers.length === 2) {
+            // Randomly decide if we should swap the order
+            const shouldSwap = Math.random() < 0.5;
+            const shuffledPlayers = shouldSwap ? 
+                [otherPlayers[1], otherPlayers[0]] : 
+                [otherPlayers[0], otherPlayers[1]];
+            // Update the accusation labels with the shuffled order
+            document.getElementById("accusePlayer1Label").innerHTML = 
+                `<input type="radio" name="accuse" id="accusePlayer1" value="${shuffledPlayers[0]}" /> Accuse ${shuffledPlayers[0]}`;
+            document.getElementById("accusePlayer2Label").innerHTML = 
+                `<input type="radio" name="accuse" id="accusePlayer2" value="${shuffledPlayers[1]}" /> Accuse ${shuffledPlayers[1]}`;
+            
+            document.getElementById("accusePlayer1Label").style.display = "block";
+            document.getElementById("accusePlayer2Label").style.display = "block";
+          }
+        });
+
+        socket.on("message", ({ color, message, bold }) => {
+          try {
+              console.log('Received message:', { color, message }); // Debug log
+              const messageDiv = document.createElement("div");
+              messageDiv.classList.add("message");
+              messageDiv.style.color = COLOR_CODES[color] || "#ffffff";
+              messageDiv.innerHTML = `<span>(${color}):</span> ${message}`;
+
+              if (color === 'Start') {
+                  messageInput.disabled = false;
+                  sendButton.disabled = false;
+                  messageInput.placeholder = "enter your message...";
+                  // Focus on the input to make it ready for typing
+                  messageInput.focus();
+              }
+              if (messageBox) {
+                  messageBox.appendChild(messageDiv);
+                  messageBox.scrollTop = messageBox.scrollHeight;
+              } else {
+                  console.error('Message box element not found');
+              }
+          } catch (error) {
+              console.error('Error displaying message:', error);
+          }
+        });
+
+        // Listen for timer updates from the server
+        socket.on("updateTimer", ({ remainingTime }) => {
+          const minutes = Math.floor(remainingTime / 60).toString().padStart(2, "0");
+          const seconds = (remainingTime % 60).toString().padStart(2, "0");
+          timerDisplay.innerText = `Time Remaining: ${minutes}:${seconds}`;
+        });
+
+      // Listen for time-up event to start accusation phase
+      socket.on("timeUpForAccusation", (data) => {
+        alert(data.message); // Notify the user that time is up
+
+        // Disable message input and accusation buttons
+        messageInput.disabled = true;
+        sendButton.disabled = true;
+        accuseButton.disabled = false; // Enable accusation
+
+        // Allow 15 seconds for final accusations
+        setTimeout(() => {
+          // alert("15 seconds are over. Finalizing the game.");
+        }, 15000);
+      });
+
+        socket.on("gameEnded", (data) => {
+            cleanupGameState();
+
+            resultsContent.innerHTML = `
+                <div class="result-item">
+                    <p>The bot was the player <b>${data.bot_color}</b>.</p>
+                    <div class="accusations">
+                        <p>Player <b>${data.player1_color}</b> accused <b>${data.player1_accusation}</b>. <b>${data.player1_accusation_status}</b> accusation.</p>
+                        <p>Player <b>${data.player2_color}</b> accused <b>${data.player2_accusation}</b>. <b>${data.player2_accusation_status}</b> accusation.</p>
+                    </div>
+                    <div class="scores">
+                        <p>Final Scores:</p>
+                        <ul>
+                            <li><b>${data.player1_color}</b> -> <b>${data.player1_score}</b> points</li>
+                            <li><b>${data.player2_color}</b> -> <b>${data.player2_score}</b> points</li>
+                            <li>Bot -> <b>${data.bot_score}</b> points</li>
+                        </ul>
+                    </div>
+                    ${data.reason ? `<p class="reason">❗❗This game ended early because: <b>${data.reason}</b></p>` : ''}
+                </div>
+            `;
+
+            resultsModal.style.display = 'flex';
+
+            // Handle the close button
+            document.getElementById('close-results').onclick = () => {
+              isIntentionalLeave = true;
+              window.location.href = '/game-entry';
+            };
+            // Also close modal and redirect if clicking outside
+            resultsModal.onclick = (e) => {
+              if (e.target === resultsModal) {
+              isIntentionalLeave = true;
+                window.location.href = '/game-entry';
+              }
+            };
+
+        });    
+
+        socket.on('disconnect', (reason) => {
+            console.log('Disconnected:', reason);
+            cleanupGameState(); 
+            if (reason === 'io server disconnect' || !document.cookie.includes('sessionId=')) {
+                // isIntentionalLeave = true;
+                window.location.href = '/game-entry';
+            }
+        });
+
+        socket.on('error', (error) => {
+          if (error.type === 'game_error') {
+              alert(`Game Error: ${error.message}`);
+          } else if(error.type === 'accusation_error') {
+              alert(`Accusation Error: ${error.message}`);
+          } else if (error.message === 'Authentication error') {
+              window.location.href = '/game-entry';
+          }
+        });
+
+        socket.on("promptAccusation", (data) => {
+            alert(data.message);
+            setTimeout(() => { }, 18000);
+        });
+
+        socket.on('gameReported', (data) => {
+            alert(data.message);
+        });
+    }
+      
+      // Send message on button click
+      sendButton.addEventListener("click", () => {
+        if (!socket) return;  // Make sure socket exists
+        const message = messageInput.value;
+        if (message.trim()) {
+            socket.emit("sendMessage", {
+                game_id: gameId,
+                message,
+                color: playerColor,
+            });
+            messageInput.value = "";
+        }
+      });
+
+      // Optionally send message on Enter key press
+      messageInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          sendButton.click();
+        }
+      });
+
+      // Handle accusation button click
+      accuseButton.addEventListener("click", () => {
+        const accusedPlayer = document.querySelector(
+          'input[name="accuse"]:checked'
+        )?.value;
+        console.log("Accuser player:", playerColor); // Check this in the console
+        console.log("Accused player:", accusedPlayer); // Check this in the console
+        if (accusedPlayer) {
+          socket.emit("accusePlayer", {
+            game_id: gameId,
+            accuser: playerColor,
+            accused: accusedPlayer,
+          });
+          accuseButton.disabled = true;
+          accusePlayer1.disabled = true;
+          accusePlayer2.disabled = true;
+        } else {
+          alert("Select a player to accuse.");
+        }
+      });
+
+
+      // Help modal functionality
+      const helpButton = document.getElementById("help-button");
+      const helpModal = document.getElementById("help-modal");
+      const closeButton = document.querySelector(".close-button");
+
+      helpButton.addEventListener("click", () => {
+        helpModal.style.display = "flex";
+      });
+
+      closeButton.addEventListener("click", () => {
+        helpModal.style.display = "none";
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (event) => {
+        if (event.target === helpModal) {
+          helpModal.style.display = "none";
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          helpModal.style.display = "none";
+        }
+      });
+
+      let isIntentionalLeave = false;
+
+      window.addEventListener('beforeunload', function (e) {
+          if (socket && !isIntentionalLeave) {
+              e.preventDefault();
+              e.returnValue = '';
+              return '';
+          }
+      });
+
+      // Leave game button functionality
+      const leaveButton = document.getElementById('leave-button');
+      leaveButton.addEventListener('click', () => {
+          if (confirm('Are you sure you want to leave the game?')) {
+              cleanupGameState();
+              socket.emit('leaveGame', {
+                  game_id: gameId,
+                  color: playerColor
+              });
+              isIntentionalLeave = true;
+              window.location.href = '/game-entry';
+          }
+      });
+
+      // Report button functionality
+      const reportButton = document.getElementById('report-button');
+      reportButton.addEventListener('click', () => {
+          if (confirm('Are you sure you want to report this game?')) {
+              cleanupGameState();
+              socket.emit('reportGame', {
+                  game_id: gameId,
+                  reporter: playerColor
+              });
+              isIntentionalLeave = true;
+              window.location.href = '/game-entry';
+          }
+      });
+
+    </script>
+  </body>
+</html>

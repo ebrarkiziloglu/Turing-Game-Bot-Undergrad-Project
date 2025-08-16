@@ -1,0 +1,34 @@
+# Use an official Node.js runtime as a parent image
+FROM node:18
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Ensure the database and logs directories exist
+RUN mkdir -p /usr/src/app/logs && chmod -R 777 /usr/src/app/logs
+
+# Create database directory
+RUN mkdir -p /usr/src/app/database
+RUN mkdir -p /usr/src/app/src
+
+# Copy SQL files
+COPY ./turing_chat_server/database/*.sql /usr/src/app/database/
+COPY ./turing_chat_server/src/*.png /usr/src/app/src/
+
+# Set permissions
+RUN chmod 777 /usr/src/app/database
+
+COPY turing_chat_server/package*.json ./
+
+RUN npm install
+
+RUN npm install -g npm@10.9.1
+
+COPY turing_chat_server .
+# Copy the rest of the application code
+
+# Expose the server port
+EXPOSE 8081
+
+# Start the server
+CMD ["node", "server.js"]

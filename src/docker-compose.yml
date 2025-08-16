@@ -1,0 +1,67 @@
+version: '2.2'
+
+networks:
+  turing_network:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: turing_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - server
+    networks:
+      - turing_network
+
+  server:
+    container_name: turing_server
+    build:
+      context: .
+      dockerfile: Dockerfile-server
+    networks:
+      - turing_network
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./turing_chat_server:/usr/src/app/turing_chat_server
+      - ./turing_game_bot:/usr/src/app/turing_game_bot
+      - ./turing_chat_server/logs:/usr/src/app/logs
+      - ./turing_chat_server/src:/usr/src/app/src
+      - ./turing_chat_server/database/turing.db:/usr/src/app/database/turing.db
+      - ./turing_chat_server/database/games.sql:/usr/src/app/database/games.sql
+      - ./turing_chat_server/database/messages.sql:/usr/src/app/database/messages.sql
+      - ./turing_chat_server/database/usernames.sql:/usr/src/app/database/usernames.sql
+      - ./turing_chat_server/database/usersandgames.sql:/usr/src/app/database/usersandgames.sql
+    environment:
+      - NODE_ENV=production
+      - PYTHONPATH=/usr/src/app
+      - SERVER_PORT=8081
+    depends_on:
+      bot:
+        condition: service_healthy
+
+  bot:
+    container_name: turing_bot
+    build:
+      context: .
+      dockerfile: Dockerfile-bot
+    networks:
+      - turing_network
+    ports:
+      - "8005:8005"  # Expose bot port
+    volumes:
+      - ./turing_game_bot/logs:/usr/src/app/bot/logs
+    environment:
+      - BOT_PORT=8005
+      - GROQ_MODEL_NAME=llama3-8b-8192
+      - OPENAI_MODEL_NAME=gpt-4o
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 8s
+      timeout: 5s
+      retries: 3
+

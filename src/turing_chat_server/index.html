@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Turing Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1E0649;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        label {
+            font-size: 1.2rem;
+            color: #f5f5f5;
+            margin-bottom: 15px;
+        }
+
+        #welcome-message {
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h1 {
+            color: #b0a0cd;
+            font-size: 2.2rem;
+        }
+
+        .center-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 40px;
+        }
+
+        .help-button {
+            background-color: #1e0649;
+            color: #b3abc1;
+            border: 2px solid #8049e0;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .help-button:hover {
+            background-color: #8049e0;
+        }
+
+        #username-input {
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #8049E0;
+            border-radius: 12px;
+            background-color: #1E0649;
+            color: #ffffff;
+            width: 300px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        #username-input::placeholder {
+            color: #B3ABC1;
+        }
+
+        #submit-username {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            background-color: #8049E0;
+            border: none;
+            color: #ffffff;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #submit-username:hover {
+            background-color: #a270f7;
+        }
+
+        #submit-username:active {
+            background-color: #514ebd;
+        }
+        
+        #game-id-input {
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #8049E0;
+            border-radius: 12px;
+            background-color: #1E0649;
+            color: #ffffff;
+            width: 300px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        #game-id-input::placeholder {
+            color: #B3ABC1;
+        }
+
+        #join-game {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            background-color: #8049E0;
+            border: none;
+            color: #ffffff;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #join-game:hover {
+            background-color: #a270f7;
+        }
+
+        #join-game:active {
+            background-color: #514ebd;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #B3ABC1;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+        }
+
+        .container h1 {
+            color: #1E0649;
+            font-size: 1.8rem;
+            text-align: left;
+        }
+
+        .container h2 {
+            color: #8049E0;
+        }
+
+        #help-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #1e0649;
+            padding: 45px;
+            border-radius: 12px;
+            border: 2px solid #b3abc1;
+            max-width: 800px;
+            width: 90%;
+            color: white;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content h1 {
+            margin-top: 0;
+            color: #b08ded;
+            font-size: 1.9rem;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: #ba9fe9;
+            font-size: 1.5rem;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .modal-content ul {
+            margin-bottom: 20px;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px; /* Adjusted from 10px */
+            right: 15px; /* Adjusted from 10px */
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem; /* Increased from 1.5rem */
+            cursor: pointer;
+            padding: 8px; /* Increased from 5px */
+            width: 40px; /* Added for better clickable area */
+            height: 40px; /* Added for better clickable area */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            color: #a270f7;
+        }
+
+        #login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id='welcome-message' class="welcome-message">
+        <h1>Welcome to the Turing Game!</h1>
+    </div>
+
+    <div id="login-container" class="container">
+        <div class="center-container">
+            <h1>Login:</h1>
+            <button class="help-button" title="Game Instructions">?</button>
+        </div>
+        <div class="input-container">
+            <input type="text" id="username-input" placeholder="enter username..." />
+            <button id="submit-username">Sign In</button>
+        </div>
+    </div>
+
+    <!-- Help modal -->
+    <div id="help-modal">
+        <div class="modal-content">
+          <button class="close-button">&times;</button>
+          <h1>Welcome to the Turing Game! 👻</h1>
+          <p>First enter your username. Then, you can join to game rooms, to join a game session. <br>
+            In a game session, there are <b>3 players:</b> <br /></p>
+          <ul>
+            <li>2 real people</li>
+            <li>1 bot</li>
+          </ul>
+          <p>
+            Your task is simple: figure out
+            <b>which player is the bot</b>! 🕵️‍♀️
+          </p>
+          <h2>How a game session works:</h2>
+          <p>
+            Each player gets a random color to keep things anonymous. <br>
+            You’ll have <b>5 minutes</b> to chat with the others and see who’s acting a
+            little… robotic. 🤖 <br />
+            Ask questions, look for weird answers, and trust your instinct!
+          </p>
+          <p>
+            When you think you’ve got it, hit the "Accuse" button at the bottom of
+            the chat. <br />
+            But here’s the catch: <br>
+            <b>Once you accuse someone, you can’t change your mind!</b>
+            So don’t rush it!
+          </p>
+          <p>The game wraps up when:</p>
+          <ul>
+            <li>The timer hits zero, ⏳ or</li>
+            <li>Both real players make their accusations. 🎯</li>
+          </ul>
+          <p>
+            When the game ends, the bot’s identity will be revealed. Did you crack
+            the case? Or did the bot outsmart you? 👀
+          </p>
+        </div>
+      </div>
+  
+
+    <script>
+        // Check if already logged in
+        if (document.cookie.includes('sessionId=')) {
+            alert('Already logged in..');
+            window.location.href = '/game-entry';
+        }
+
+        async function submitUsername() {
+            const username = document.getElementById('username-input').value.trim();
+
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+
+            try {
+                const response = await fetch('/submit-username', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = '/game-entry';
+                } else {
+                    alert(data.error || 'Failed to sign in');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error signing in');
+            }
+        }
+
+        document.getElementById('submit-username').addEventListener('click', submitUsername);
+        document.getElementById('username-input').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') submitUsername();
+        });
+
+        // Help modal functionality
+        const helpButtons = document.querySelectorAll(".help-button");
+        const helpModal = document.getElementById("help-modal");
+        const closeButton = document.querySelector(".close-button");
+
+        helpButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                console.log('Help button is pressed.');
+                helpModal.style.display = "flex";
+            });
+        });
+
+        closeButton.addEventListener("click", () => {
+            helpModal.style.display = "none";
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener("click", (event) => {
+            if (event.target === helpModal) {
+            helpModal.style.display = "none";
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+            helpModal.style.display = "none";
+            }
+        });
+
+    </script>
+</body>
+</html>
